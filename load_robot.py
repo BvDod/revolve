@@ -43,14 +43,14 @@ async def run():
 
     # Connect to the simulator and pause
     connection = await World.create(settings, world_address=('127.0.0.1', settings.port_start))
-    await asyncio.sleep(10)
+    await asyncio.sleep(1)
 
     # initialization finished
 
     # load robot file
     robot = RevolveBot(_id=settings.test_robot)
-    robot.load_file("experiments/examples/yaml/spider.yaml", conf_type='yaml')
-    robot.save_file(f'{"experiments/examples/yaml/spider.yaml"}.sdf', conf_type='sdf')
+    robot.load_file("test.yaml", conf_type='yaml')
+    robot.save_file(f'{"test.yaml"}.sdf', conf_type='sdf')
 
     # insert robot into the simulator
     robot_manager = await connection.insert_robot(robot, Vector3(0, 0, 0.25), life_timeout=None)

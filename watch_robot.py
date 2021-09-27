@@ -25,6 +25,8 @@ async def run():
     # Parse command line / file input arguments
     settings = parser.parse_args()
 
+    print(settings.port_start)
+
     # Start Simulator
     if settings.simulator_cmd != 'debug':
         simulator_supervisor = DynamicSimSupervisor(
@@ -36,17 +38,20 @@ async def run():
             simulator_name='gazebo'
         )
         await simulator_supervisor.launch_simulator(port=settings.port_start)
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(10)
 
     # Connect to the simulator and pause
-    connection = await World.create(settings, world_address=('127.0.0.1', settings.port_start))
-    await asyncio.sleep(1)
 
+
+    connection = await World.create(settings, world_address=('127.0.0.1', settings.port_start))
+    await asyncio.sleep(10)
+    
+    
     # initialization finished
     log.info("loading robot")
 
     # load robot file
-    path = "phenotype_1.yaml"
+    path = "./test.yaml"
     robot = RevolveBot()
     robot.load_file(path, conf_type='yaml')
     robot.save_file(f'{path}.sdf', conf_type='sdf')

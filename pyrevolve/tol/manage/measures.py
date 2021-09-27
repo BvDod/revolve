@@ -6,6 +6,8 @@ from pyrevolve.util import Time
 from pyrevolve.angle.manage.robotmanager import RobotManager as RvRobotManager
 from pyrevolve.revolve_bot.revolve_bot import RevolveBot
 
+from pyrevolve.evolution.fitness import follow_line
+
 
 class BehaviouralMeasurements:
     """
@@ -24,6 +26,8 @@ class BehaviouralMeasurements:
             self.displacement_velocity_hill = displacement_velocity_hill(robot_manager)
             self.head_balance = head_balance(robot_manager)
             self.contacts = contacts(robot_manager, robot)
+            self.line_fitness = follow_line(robot_manager, robot)
+
         else:
             self.velocity = None
             self.displacement = None
@@ -39,7 +43,8 @@ class BehaviouralMeasurements:
             'displacement_velocity': self.displacement_velocity,
             'displacement_velocity_hill': self.displacement_velocity_hill,
             'head_balance': self.head_balance,
-            'contacts': self.contacts
+            'contacts': self.contacts,
+            "line_fitness": self.line_fitness
         }.items()
 
 

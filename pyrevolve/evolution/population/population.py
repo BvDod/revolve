@@ -5,6 +5,7 @@ import math
 import os
 import re
 from typing import TYPE_CHECKING
+import numpy as np
 
 from pyrevolve.custom_logging.logger import logger
 from pyrevolve.evolution import fitness
@@ -13,6 +14,7 @@ from pyrevolve.evolution.population.population_config import PopulationConfig
 from pyrevolve.revolve_bot.brain import BrainCPGTarget
 from pyrevolve.revolve_bot.revolve_bot import RevolveBot
 from pyrevolve.tol.manage.measures import BehaviouralMeasurements
+from pyrevolve.evolution.fitness import scale_fitness
 
 if TYPE_CHECKING:
     from typing import Callable, List, Optional
@@ -309,17 +311,30 @@ class Population:
         # Parse command line / file input arguments
         # await self.simulator_connection.pause(True)
         robot_futures = []
-        for individual in new_individuals:
-            logger.info(f"Evaluating individual (gen {gen_num}) {individual.id} ...")
-            assert callable(self.config.fitness_function)
-            robot_futures.append(
-                asyncio.ensure_future(
-                    self.evaluate_single_robot(
-                        individual=individual, fitness_fun=self.config.fitness_function
+
+
+        if not self.config.fitness_scaling:
+            for individual in new_individuals:
+                logger.info(f"Evaluating individual (gen {gen_num}) {individual.id} ...")
+                assert callable(self.config.fitness_function)
+                robot_futures.append(
+                    asyncio.ensure_future(
+                        self.evaluate_single_robot(
+                            individual=individual, fitness_fun=self.config.fitness_function
+                        )
                     )
                 )
-            )
+        
+        if self.config.fitness_scaling:
 
+            # Calculate indivuduals height and line fitness, scale, and then caalculate total fitness
+
+            mean_fitness = np.mean(self.individuals, key= lambda x: x.fitness)
+            fitness_range = np.max(self.individuals, key= lambda x: x.fitness) - np.min(self.individuals, key= lambda x: x.fitness)
+
+            for individual in self.individuals:
+                individual.fitness = scale_fitness(individual.fitness, mean_fitness, fitness_range)
+            
         await asyncio.sleep(1)
 
         for i, future in enumerate(robot_futures):

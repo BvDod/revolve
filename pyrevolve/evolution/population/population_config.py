@@ -31,7 +31,8 @@ class PopulationConfig:
                  experiment_management,
                  offspring_size: Optional[int] = None,
                  grace_time: float = 0.0,
-                 objective_functions: Optional[List[Callable[[RobotManager, RevolveBot], float]]] = None):
+                 objective_functions: Optional[List[Callable[[RobotManager, RevolveBot], float]]] = None,
+                 fitness_scaling: Optional[bool] = False):
         """
         Creates a PopulationConfig object that sets the particular configuration for the population
 

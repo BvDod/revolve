@@ -280,3 +280,23 @@ def follow_line(robot_manager: RobotManager, robot: RevolveBot) -> float:
         logger.info(f"Fitness = {fitness}")
 
     return fitness
+
+def robot_height(robot_manager: RobotManager, robot: RevolveBot) -> float:
+    """ Fitness is defined as the height in blocks of the morphology"""
+    z_depth = robot._morphological_measurements.z_depth
+
+    return z_depth
+
+def line_and_height(robot_manager: RobotManager, robot: RevolveBot) -> float:
+
+    fitness1 = follow_line(robot_manager, robot)
+    fitness2 = robot_height(robot_manager, robot)
+
+    fitness_combined = 50*fitness1 + fitness2
+    return fitness_combined
+
+def scale_fitness(fitness: float, mean_fitness: float, fitness_range: float) -> float:
+    scaled_fitness = (fitness - mean_fitness) / fitness_range 
+    return scaled_fitness
+
+

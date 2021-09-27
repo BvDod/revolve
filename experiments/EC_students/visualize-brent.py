@@ -1,0 +1,148 @@
+import os
+import csv
+
+import pandas as pd
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+
+
+def datafolder_to_df(experiment_name):
+    """ This function extracts the phenotype, behavioural, fitness and generation data from the files and returns a df """
+
+    # Data input locations
+    experiment_folder = f"data/default_experiment/{experiment_name}/"
+    phenotype_folder = experiment_folder + "data_fullevolution/descriptors/"
+    behave_folder = phenotype_folder + "behavioural/"
+    generations_folder = experiment_folder + "generations/"
+    fitness_csv = experiment_folder + "data_fullevolution/fitness.csv"
+
+
+    # Dict that contains data about each "robot-id"
+    robots = {}
+
+    # First load description data
+    ## Phenotype
+    for file in os.listdir(phenotype_folder):
+        if not file[-4:] == ".txt":
+            continue
+        robot_id = int(file.split("_")[2].split(".")[0])
+        with open(phenotype_folder + file) as csvfile:
+            reader = csv.reader(csvfile, delimiter=" ")
+            descr_dict = {rows[0]:float(rows[1]) for rows in reader}
+        robots[robot_id] = descr_dict
+    
+    ## Behavioural
+    for file in os.listdir(behave_folder):
+        if not file[-4:] == ".txt":
+            continue
+        robot_id = int(file.split("_")[2].split(".")[0])
+        with open(behave_folder + file) as csvfile:
+            reader = csv.reader(csvfile, delimiter=" ")
+            behave_dict = {rows[0]:float(rows[1]) for rows in reader}
+        robots[robot_id].update(behave_dict)
+
+    # Add correct generation(s) to each robot
+    for folder in os.listdir(generations_folder):
+        generation_id = int(folder.split("_")[1])
+        with open(generations_folder + folder + "/identifiers.txt") as csvfile:
+            reader = csv.reader(csvfile, delimiter=" ")
+            for row in reader:
+                if not "generations" in robots[int(row[0])]:
+                    robots[int(row[0])]["generations"] = []
+                robots[int(row[0])]["generations"].append(generation_id)
+    
+    # Add fitness to each robot
+    with open(fitness_csv) as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        for row in reader:
+            robots[int(row[0])]["fitness"] = float(row[1])
+    
+    robot_df = pd.DataFrame.from_dict(robots, orient="index").sort_index()
+
+    return robot_df
+
+
+def get_data_per_generation(df, data_label):
+    """ This function extracts the proper *data label* values for each generation"""
+    """ Note: this is needed because each robot can occur in multiple gens"""
+
+    x, y = [], []
+    df = df[df["generations"].notna()]
+    for index, row in df.iterrows():
+        for gen in row["generations"]:
+            x.append(gen)
+            y.append(row[data_label])
+    return x, y
+
+
+def get_mean_and_std_generation_wise(x, y):
+    """ Returns mean and std for each generation"""
+
+    generations = np.array(list(set(x)))
+    mean_gens = np.empty_like(generations, dtype=float)
+    std_gens = np.empty_like(generations, dtype=float)
+
+    for generation in generations:
+        mean = np.mean([fitness for fitness, y_gen in zip(y,x) if y_gen == generation])
+        std = np.std([fitness for fitness, y_gen in zip(y,x) if y_gen == generation])
+        mean_gens[generation] = mean
+        std_gens[generation] = std
+    
+    return generations,mean_gens, std_gens
+
+
+def plot_generational_graph(generations, mean, std, label, figure_dir):
+    """ Creates a line plot with accompanying std region """
+
+    sns.set()
+    plt.plot(generations, mean, 'b-')
+    plt.fill_between(generations, mean - std, mean + std, color='b', alpha=0.2)
+    plt.xlabel("Generation")
+    plt.ylabel(label)
+    plt.title(f"Mean {label}")
+ 
+    # Save png of plot to disc
+    if not os.path.exists(figure_dir):
+        os.makedirs(figure_dir)
+    plt.savefig(f"{figure_dir}{label}.png")
+
+    plt.show()
+
+
+if __name__== "__main__":
+
+    # Name of the experiment folder
+    experiment_name = "z"
+
+    # Returns all robots and their associated data in a df
+    robot_df = datafolder_to_df(experiment_name)
+    
+    # To check out the data
+    robot_df.to_csv('df_test.csv')
+
+    # Save figures as png to this dir
+    figure_dir = f"figures/{experiment_name}/"
+
+    # Extracts generation, fitness pairs for each robot. (needed since each robot can occur > or < than 1 time in a generation)
+    x, y = get_data_per_generation(robot_df, "fitness")
+    # Calculates mean and std for each generation.
+    generations, mean, std = get_mean_and_std_generation_wise(x, y)
+    plot_generational_graph(generations, mean, std, "Fitness", figure_dir)
+
+    x, y = get_data_per_generation(robot_df, "line_fitness")
+    generations, mean, std = get_mean_and_std_generation_wise(x, y)
+    plot_generational_graph(generations, mean, std, "Line Fitness", figure_dir)
+
+    x, y = get_data_per_generation(robot_df, "z_depth")
+    generations, mean, std = get_mean_and_std_generation_wise(x, y)
+    plot_generational_graph(generations, mean, std, "Height", figure_dir)
+
+
+
+    
+
+
+        
+    

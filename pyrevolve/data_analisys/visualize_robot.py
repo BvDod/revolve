@@ -140,11 +140,11 @@ async def test_robot_run(robot_file_path: str):
             simulator_name='gazebo'
         )
         await simulator_supervisor.launch_simulator(port=settings.port_start)
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(5)
 
     # Connect to the simulator and pause
     connection = await World.create(settings, world_address=('127.0.0.1', settings.port_start))
-    await asyncio.sleep(1)
+    await asyncio.sleep(5)
 
     # init finished
 
@@ -155,7 +155,7 @@ async def test_robot_run(robot_file_path: str):
 
     await connection.pause(True)
     robot_manager = await connection.insert_robot(robot, Vector3(0, 0, 0.25), life_timeout=None)
-    await asyncio.sleep(1.0)
+    await asyncio.sleep(5)
 
     if settings.plot_test_robot:
         import matplotlib.pyplot as plt
