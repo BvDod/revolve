@@ -471,5 +471,8 @@ class ExperimentManagement:
                         elif line_0 == 'contacts':
                             phenotype._behavioural_measurements.contacts = \
                                 float(line_1) if line_1 != 'None\n' else None
+                        elif line_0 == 'line_fitness':
+                            phenotype._behavioural_measurements.line_fitness = \
+                                float(line_1) if line_1 != 'None\n' else None
 
         return individual

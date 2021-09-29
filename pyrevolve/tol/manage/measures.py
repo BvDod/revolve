@@ -35,6 +35,7 @@ class BehaviouralMeasurements:
             self.displacement_velocity_hill = None
             self.head_balance = None
             self.contacts = None
+            self.line_fitness = None
 
     def items(self):
         return {

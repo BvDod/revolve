@@ -85,7 +85,7 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 5
+    num_generations = 100
     
     """
     population_size = 10
@@ -178,8 +178,7 @@ async def run():
         population_size=population_size,
         genotype_constructor=create_random_genotype,
         genotype_conf=genotype_constructor_config,
-        #fitness_function=fitness_follow_line,
-        fitness_function=line_and_height,
+        fitness_function=fitness_follow_line,
         mutation_operator=bodybrain_composition_mutate,
         mutation_conf=bodybrain_composition_config,
         crossover_operator=bodybrain_composition_crossover,
@@ -195,6 +194,8 @@ async def run():
         experiment_name=settings.experiment_name,
         experiment_management=experiment_management,
         # target_distance=target_distance,
+        line_height_scaled = True,
+
     )
 
     # check if recovery is required

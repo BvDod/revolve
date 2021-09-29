@@ -38,9 +38,10 @@ def datafolder_to_df(experiment_name):
         if not file[-4:] == ".txt":
             continue
         robot_id = int(file.split("_")[2].split(".")[0])
+     
         with open(behave_folder + file) as csvfile:
             reader = csv.reader(csvfile, delimiter=" ")
-            behave_dict = {rows[0]:float(rows[1]) for rows in reader}
+            behave_dict = {rows[0]:float(rows[1]) for rows in reader if len(rows) > 1}
         robots[robot_id].update(behave_dict)
 
     # Add correct generation(s) to each robot
@@ -57,7 +58,8 @@ def datafolder_to_df(experiment_name):
     with open(fitness_csv) as csvfile:
         reader = csv.reader(csvfile, delimiter=",")
         for row in reader:
-            robots[int(row[0])]["fitness"] = float(row[1])
+            if not row[1] == "None":
+                robots[int(row[0])]["fitness"] = float(row[1])
     
     robot_df = pd.DataFrame.from_dict(robots, orient="index").sort_index()
 
@@ -114,7 +116,7 @@ def plot_generational_graph(generations, mean, std, label, figure_dir):
 if __name__== "__main__":
 
     # Name of the experiment folder
-    experiment_name = "z"
+    experiment_name = "1"
 
     # Returns all robots and their associated data in a df
     robot_df = datafolder_to_df(experiment_name)
