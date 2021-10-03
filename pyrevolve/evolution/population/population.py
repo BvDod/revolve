@@ -338,13 +338,13 @@ class Population:
             line_fitness_range = (max(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.line_fitness).phenotype._behavioural_measurements.line_fitness
                                 - min(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.line_fitness).phenotype._behavioural_measurements.line_fitness)
        
-            mean_height = np.sum([individual.phenotype._morphological_measurements.z_depth for individual in self.individuals])/len(self.individuals)
-            height_range = (max(self.individuals, key= lambda x: x.phenotype._morphological_measurements.z_depth).phenotype._morphological_measurements.z_depth
-                            - min(self.individuals, key= lambda x: x.phenotype._morphological_measurements.z_depth).phenotype._morphological_measurements.z_depth)
+            mean_height = np.sum([individual.phenotype._behavioural_measurements.avg_z for individual in self.individuals])/len(self.individuals)
+            height_range = (max(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.avg_z).phenotype._behavioural_measurements.avg_z
+                            - min(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.avg_z).phenotype._behavioural_measurements.avg_z)
             
             for individual in self.individuals:
                 individual.fitness = (scale_fitness(individual.phenotype._behavioural_measurements.line_fitness, mean_line_fitness, line_fitness_range)
-                                     + scale_fitness(individual.phenotype._morphological_measurements.z_depth, mean_height, height_range))
+                                     + scale_fitness(individual.phenotype._behavioural_measurements.avg_z, mean_height, height_range))
         
         print([individual.fitness for individual in self.individuals])
         print("/n/n/n/n/n")

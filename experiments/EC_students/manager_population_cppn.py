@@ -41,12 +41,14 @@ from pyrevolve.genotype.cppnneat.brain.develop import develop as cppnneat_brain_
 from pyrevolve.genotype.cppnneat.brain.genotype import Genotype as CppnneatBrainGenotype
 from pyrevolve.genotype.cppnneat.brain.mutation import mutate as cppnneat_brain_mutate
 from pyrevolve.genotype.cppnneat.config import get_default_multineat_params
+from pyrevolve.genotype.plasticoding import PlasticodingConfig
 from pyrevolve.util.supervisor.analyzer_queue import AnalyzerQueue
 from pyrevolve.util.supervisor.simulator_queue import SimulatorQueue
 
 
 @dataclass
 class GenotypeConstructorConfig:
+    body_plasticoding_config: PlasticodingConfig
     body_n_start_mutations: int
     brain_n_start_mutations: int
     bodybrain_composition_config: BodybrainCompositionConfig
@@ -85,7 +87,7 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 100
+    num_generations = 500
     
     """
     population_size = 10
@@ -99,6 +101,7 @@ async def run():
 
     body_n_start_mutations: int = 10
     brain_n_start_mutations: int = 10
+    max_structural_modules=100
 
     # body multineat settings
     multineat_params_body = get_default_multineat_params()
@@ -156,6 +159,10 @@ async def run():
 
     # genotype constructor config. Used by `create_random_genotype` in this file.
     genotype_constructor_config = GenotypeConstructorConfig(
+        PlasticodingConfig(
+            max_structural_modules=max_structural_modules,
+            #plastic=False,
+        ),
         body_n_start_mutations,
         brain_n_start_mutations,
         bodybrain_composition_config,

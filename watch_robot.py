@@ -29,8 +29,6 @@ async def run():
     # Parse command line / file input arguments
     settings = parser.parse_args()
 
-    print(settings.port_start)
-
     # Start Simulator
     if settings.simulator_cmd != "debug":
         simulator_supervisor = DynamicSimSupervisor(
@@ -53,7 +51,7 @@ async def run():
     # initialization finished
 
     # load robot file
-    path = "phenotype_1.yaml"
+    path = "test.yaml"
     robot = RevolveBot(_id=settings.test_robot)
     robot.load_file(path, conf_type="yaml")
     robot.update_substrate()

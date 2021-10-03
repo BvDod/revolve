@@ -283,7 +283,7 @@ def follow_line(robot_manager: RobotManager, robot: RevolveBot) -> float:
 
 def robot_height(robot_manager: RobotManager, robot: RevolveBot) -> float:
     """ Fitness is defined as the height in blocks of the morphology"""
-    z_depth = robot._morphological_measurements.z_depth
+    z_depth = robot._behavioural_measurements.avg_z
 
     return z_depth
 

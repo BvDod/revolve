@@ -27,6 +27,7 @@ class BehaviouralMeasurements:
             self.head_balance = head_balance(robot_manager)
             self.contacts = contacts(robot_manager, robot)
             self.line_fitness = follow_line(robot_manager, robot)
+            self.avg_z = calculate_average_z(robot_manager)
 
         else:
             self.velocity = None
@@ -36,6 +37,7 @@ class BehaviouralMeasurements:
             self.head_balance = None
             self.contacts = None
             self.line_fitness = None
+            self.avg_z = None
 
     def items(self):
         return {
@@ -45,7 +47,8 @@ class BehaviouralMeasurements:
             'displacement_velocity_hill': self.displacement_velocity_hill,
             'head_balance': self.head_balance,
             'contacts': self.contacts,
-            "line_fitness": self.line_fitness
+            "line_fitness": self.line_fitness,
+            "avg_z": self.avg_z
         }.items()
 
 
@@ -141,6 +144,10 @@ def contacts(robot_manager: RvRobotManager, robot: RevolveBot):
         robot._morphological_measurements = robot.measure_body()
     avg_contacts = avg_contacts / robot._morphological_measurements.absolute_size
     return avg_contacts
+
+
+def calculate_average_z(robot_manager: RvRobotManager):
+    return sum([vector.z for vector in robot_manager._positions])/len(robot_manager._positions)
 
 
 def logs_position_orientation(robot_manager: RvRobotManager, o, evaluation_time, robotid, path):

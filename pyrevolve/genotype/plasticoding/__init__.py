@@ -17,7 +17,7 @@ class PlasticodingConfig:
                  i_iterations=3,
                  max_structural_modules=100,
                  robot_id=0,
-                 allow_linear_joint=True,
+                 allow_linear_joint=False,
                  allow_vertical_brick=True,
                  use_movement_commands=True,
                  use_rotation_commands=True,
