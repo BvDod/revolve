@@ -6,7 +6,7 @@ from pyrevolve.util import Time
 from pyrevolve.angle.manage.robotmanager import RobotManager as RvRobotManager
 from pyrevolve.revolve_bot.revolve_bot import RevolveBot
 
-from pyrevolve.evolution.fitness import follow_line
+from pyrevolve.evolution.fitness import follow_line, average_height_fitness
 
 
 class BehaviouralMeasurements:
@@ -26,8 +26,8 @@ class BehaviouralMeasurements:
             self.displacement_velocity_hill = displacement_velocity_hill(robot_manager)
             self.head_balance = head_balance(robot_manager)
             self.contacts = contacts(robot_manager, robot)
-            self.line_fitness = follow_line(robot_manager, robot)
-            self.avg_z = calculate_average_z(robot_manager)
+            self.follow_line_fitness = follow_line(robot_manager, robot)
+            self.average_height = average_height_fitness(robot_manager, robot)
 
         else:
             self.velocity = None
@@ -36,8 +36,8 @@ class BehaviouralMeasurements:
             self.displacement_velocity_hill = None
             self.head_balance = None
             self.contacts = None
-            self.line_fitness = None
-            self.avg_z = None
+            self.follow_line_fitness = None
+            self.average_height = None
 
     def items(self):
         return {
@@ -47,8 +47,8 @@ class BehaviouralMeasurements:
             'displacement_velocity_hill': self.displacement_velocity_hill,
             'head_balance': self.head_balance,
             'contacts': self.contacts,
-            "line_fitness": self.line_fitness,
-            "avg_z": self.avg_z
+            "follow_line_fitness": self.follow_line_fitness,
+            "average_height": self.average_height
         }.items()
 
 
@@ -144,10 +144,6 @@ def contacts(robot_manager: RvRobotManager, robot: RevolveBot):
         robot._morphological_measurements = robot.measure_body()
     avg_contacts = avg_contacts / robot._morphological_measurements.absolute_size
     return avg_contacts
-
-
-def calculate_average_z(robot_manager: RvRobotManager):
-    return sum([vector.z for vector in robot_manager._positions])/len(robot_manager._positions)
 
 
 def logs_position_orientation(robot_manager: RvRobotManager, o, evaluation_time, robotid, path):

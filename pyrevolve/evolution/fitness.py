@@ -281,22 +281,14 @@ def follow_line(robot_manager: RobotManager, robot: RevolveBot) -> float:
 
     return fitness
 
-def robot_height(robot_manager: RobotManager, robot: RevolveBot) -> float:
+def average_height_fitness(robot_manager: RobotManager, robot: RevolveBot) -> float:
     """ Fitness is defined as the height in blocks of the morphology"""
-    z_depth = robot._behavioural_measurements.avg_z
+    average_height = sum([vector.z for vector in robot_manager._positions])/len(robot_manager._positions) if robot_manager._positions.__len__() != 0 else 0
+    return average_height
 
-    return z_depth
-
-def line_and_height(robot_manager: RobotManager, robot: RevolveBot) -> float:
-
-    fitness1 = follow_line(robot_manager, robot)
-    fitness2 = robot_height(robot_manager, robot)
-
-    fitness_combined = 50*fitness1 + fitness2
-    return fitness_combined
 
 def scale_fitness(fitness: float, mean_fitness: float, fitness_range: float) -> float:
-    scaled_fitness = (fitness - mean_fitness) / fitness_range 
+    scaled_fitness = (fitness - mean_fitness) / fitness_range
     return scaled_fitness
 
 

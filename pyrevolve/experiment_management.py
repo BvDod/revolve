@@ -471,11 +471,11 @@ class ExperimentManagement:
                         elif line_0 == 'contacts':
                             phenotype._behavioural_measurements.contacts = \
                                 float(line_1) if line_1 != 'None\n' else None
-                        elif line_0 == 'line_fitness':
-                            phenotype._behavioural_measurements.line_fitness = \
+                        elif line_0 == 'follow_line_fitness':
+                            phenotype._behavioural_measurements.follow_line_fitness = \
                                 float(line_1) if line_1 != 'None\n' else None
-                        elif line_0 == 'avg_z':
-                            phenotype._behavioural_measurements.avg_z = \
+                        elif line_0 == 'average_height':
+                            phenotype._behavioural_measurements.average_height = \
                                 float(line_1) if line_1 != 'None\n' else None
 
         return individual

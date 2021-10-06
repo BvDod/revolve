@@ -116,7 +116,7 @@ def plot_generational_graph(generations, mean, std, label, figure_dir):
 if __name__== "__main__":
 
     # Name of the experiment folder
-    experiment_name = "scaled_no_la2"
+    experiment_name = "1"
 
     # Returns all robots and their associated data in a df
     robot_df = datafolder_to_df(experiment_name)
@@ -126,7 +126,7 @@ if __name__== "__main__":
 
     # Convert to height in blocks
     block_height = 0.035
-    robot_df["avg_z_in_blocks"] = robot_df["avg_z"] / block_height
+    robot_df["avg_z_in_blocks"] = robot_df["average_height"] / block_height
 
     # Save figures as png to this dir
     figure_dir = f"figures/{experiment_name}/"
@@ -137,17 +137,13 @@ if __name__== "__main__":
     generations, mean, std = get_mean_and_std_generation_wise(x, y)
     plot_generational_graph(generations, mean, std, "Fitness", figure_dir)
 
-    x, y = get_data_per_generation(robot_df, "line_fitness")
+    x, y = get_data_per_generation(robot_df, "follow_line_fitness")
     generations, mean, std = get_mean_and_std_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, "Line Fitness", figure_dir)
+    plot_generational_graph(generations, mean, std, "Distance traveled", figure_dir)
 
-    x, y = get_data_per_generation(robot_df, "z_depth")
+    x, y = get_data_per_generation(robot_df, "average_height")
     generations, mean, std = get_mean_and_std_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, "Height", figure_dir)
-
-    x, y = get_data_per_generation(robot_df, "avg_z")
-    generations, mean, std = get_mean_and_std_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, "avg_z", figure_dir)
+    plot_generational_graph(generations, mean, std, "Average height", figure_dir)
 
     x, y = get_data_per_generation(robot_df, "avg_z_in_blocks")
     generations, mean, std = get_mean_and_std_generation_wise(x, y)
