@@ -6,7 +6,7 @@ import multineat
 from pyrevolve import parser
 from pyrevolve.custom_logging.logger import logger
 from pyrevolve.evolution.fitness import follow_line as fitness_follow_line
-from pyrevolve.evolution.fitness import robot_height, line_and_height
+from pyrevolve.evolution.fitness import average_height_fitness
 from pyrevolve.evolution.population.population import Population
 from pyrevolve.evolution.population.population_config import PopulationConfig
 from pyrevolve.evolution.population.population_management import (
@@ -86,14 +86,14 @@ async def run():
 
     # experiment params #
     num_generations = 100
-    
+
     """
     population_size = 10
     offspring_size = 5
     """
 
-    population_size = 20
-    offspring_size = 10
+    population_size = 50
+    offspring_size = 20
 
     target_distance = 10
 
@@ -178,7 +178,7 @@ async def run():
         population_size=population_size,
         genotype_constructor=create_random_genotype,
         genotype_conf=genotype_constructor_config,
-        fitness_function=fitness_follow_line,
+        fitness_function=average_height_fitness,
         mutation_operator=bodybrain_composition_mutate,
         mutation_conf=bodybrain_composition_config,
         crossover_operator=bodybrain_composition_crossover,
@@ -194,7 +194,7 @@ async def run():
         experiment_name=settings.experiment_name,
         experiment_management=experiment_management,
         # target_distance=target_distance,
-        line_height_scaled = True,
+        # line_height_scaled = True,
 
     )
 

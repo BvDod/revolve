@@ -3,7 +3,7 @@ import os
 # set these variables according to your experiments #
 dirpath = 'data'
 experiments_type = [
-    'lsys'
+    'height_fitness'
 ]
 runs = 1
 
@@ -124,6 +124,8 @@ def build_headers(path):
     file_summary.write(phenotype_headers[-1] + '\t')
     phenotype_headers.append('parents_2')
     file_summary.write(phenotype_headers[-1] + '\t')
+    #phenotype_headers.append('average_height')
+    #file_summary.write(phenotype_headers[-1] + '\t')
 
     file_summary.write('fitness\t')
     file_summary.write('fitness_before_learn\n')

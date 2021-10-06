@@ -6,8 +6,6 @@ from pyrevolve.util import Time
 from pyrevolve.angle.manage.robotmanager import RobotManager as RvRobotManager
 from pyrevolve.revolve_bot.revolve_bot import RevolveBot
 
-from pyrevolve.evolution.fitness import follow_line
-
 
 class BehaviouralMeasurements:
     """
@@ -26,7 +24,8 @@ class BehaviouralMeasurements:
             self.displacement_velocity_hill = displacement_velocity_hill(robot_manager)
             self.head_balance = head_balance(robot_manager)
             self.contacts = contacts(robot_manager, robot)
-            self.line_fitness = follow_line(robot_manager, robot)
+            self.average_height = average_height(robot_manager)
+            self.path_length = path_length(robot_manager)
 
         else:
             self.velocity = None
@@ -35,17 +34,18 @@ class BehaviouralMeasurements:
             self.displacement_velocity_hill = None
             self.head_balance = None
             self.contacts = None
-            self.line_fitness = None
+            self.average_height = None
+            self.path_length = None
 
     def items(self):
         return {
             'velocity': self.velocity,
-            #'displacement': self.displacement,
             'displacement_velocity': self.displacement_velocity,
             'displacement_velocity_hill': self.displacement_velocity_hill,
             'head_balance': self.head_balance,
             'contacts': self.contacts,
-            "line_fitness": self.line_fitness
+            'average_height': self.average_height,
+            'path_length': self.path_length,
         }.items()
 
 
@@ -176,3 +176,11 @@ def logs_position_orientation(robot_manager: RvRobotManager, o, evaluation_time,
             robot_manager.avg_y = 0
             robot_manager.avg_z = 0
             robot_manager.count_group = 1
+
+def average_height(robot_manager: RvRobotManager) -> float:
+    """ This function takes the Z position of the head throughout a robot's life and averages it """
+    # z_depth = robot._morphological_measurements.z_depth
+    sum_heights = 0
+    for timestep_xyz in robot_manager._positions:
+        sum_heights += timestep_xyz[2]
+    return sum_heights / (robot_manager._positions.__len__()) if robot_manager._positions.__len__() != 0 else 0
