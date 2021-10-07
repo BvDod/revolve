@@ -185,7 +185,4 @@ def logs_position_orientation(robot_manager: RvRobotManager, o, evaluation_time,
 def average_height(robot_manager: RvRobotManager) -> float:
     """ This function takes the Z position of the head throughout a robot's life and averages it """
     # z_depth = robot._morphological_measurements.z_depth
-    sum_heights = 0
-    for timestep_xyz in robot_manager._positions:
-        sum_heights += timestep_xyz[2]
-    return sum_heights / (robot_manager._positions.__len__()) if robot_manager._positions.__len__() != 0 else 0
+    return sum([vector.z for vector in robot_manager._positions])/len(robot_manager._positions) if robot_manager._positions.__len__() != 0 else 0
