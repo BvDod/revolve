@@ -124,6 +124,8 @@ def build_headers(path):
     file_summary.write(phenotype_headers[-1] + '\t')
     phenotype_headers.append('parents_2')
     file_summary.write(phenotype_headers[-1] + '\t')
+    #phenotype_headers.append('average_height')
+    #file_summary.write(phenotype_headers[-1] + '\t')
 
     #phenotype_headers.append('average_height')
     #file_summary.write(phenotype_headers[-1] + '\t')

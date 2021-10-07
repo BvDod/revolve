@@ -330,21 +330,19 @@ class Population:
             (   individual.fitness,
                 individual.phenotype._behavioural_measurements,
             ) = await future
-        
+
         if self.config.line_height_scaled:
-            
             mean_line_fitness = np.sum([individual.phenotype._behavioural_measurements.follow_line_fitness for individual in self.individuals])/len(self.individuals)
             line_fitness_range = (max(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
                                 - min(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness)
-       
+
             mean_height = np.sum([individual.phenotype._behavioural_measurements.average_height for individual in self.individuals])/len(self.individuals)
             height_range = (max(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
                             - min(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height)
-            
+
             for individual in self.individuals:
                 individual.fitness = (scale_fitness(individual.phenotype._behavioural_measurements.follow_line_fitness, mean_line_fitness, line_fitness_range)
                                      + scale_fitness(individual.phenotype._behavioural_measurements.average_height, mean_height, height_range))
-        
 
         for i, future in enumerate(robot_futures):
             individual = new_individuals[i]

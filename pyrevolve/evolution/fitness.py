@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Tuple
 
 from pyrevolve.custom_logging.logger import logger
 from pyrevolve.revolve_bot.revolve_module import Orientation
+from pyrevolve.tol.manage.measures import average_height
 from pyrevolve.SDF.math import Vector3
 from pyrevolve.tol.manage import measures
 
@@ -282,13 +283,9 @@ def follow_line(robot_manager: RobotManager, robot: RevolveBot) -> float:
     return fitness
 
 def average_height_fitness(robot_manager: RobotManager, robot: RevolveBot) -> float:
-    """ Fitness is defined as the height in blocks of the morphology"""
-    average_height = sum([vector.z for vector in robot_manager._positions])/len(robot_manager._positions) if robot_manager._positions.__len__() != 0 else 0
-    return average_height
+    return average_height(robot_manager)
 
 
 def scale_fitness(fitness: float, mean_fitness: float, fitness_range: float) -> float:
     scaled_fitness = (fitness - mean_fitness) / fitness_range
     return scaled_fitness
-
-
