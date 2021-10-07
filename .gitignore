@@ -67,6 +67,7 @@ target/
 
 # Visual Studio Code
 /.vscode/
+.history*
 
 # Virtual env
 .venv*/
