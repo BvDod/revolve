@@ -286,6 +286,6 @@ def average_height_fitness(robot_manager: RobotManager, robot: RevolveBot) -> fl
     return average_height(robot_manager)
 
 
-def scale_fitness(fitness: float, mean_fitness: float, fitness_range: float) -> float:
-    scaled_fitness = (fitness - mean_fitness) / fitness_range
+def scale_fitness(fitness: float, min_fitness: float, fitness_range: float) -> float:
+    scaled_fitness = (fitness - min_fitness) / fitness_range
     return scaled_fitness
