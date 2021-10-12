@@ -425,11 +425,12 @@ class ExperimentManagement:
                     line_split = line.split(',')
                     line_id = line_split[0]
                     line_fitness = line_split[1:]  # type List[str]
-                    if line_id == _id:
+                    if int(line_id) == _id:
                         objectives = [None if line_fitness_v.startswith('None') else float(line_fitness_v) for line_fitness_v in line_fitness]
                         if len(line_fitness) == 1:
                             fitness = objectives[0]
                             objectives = None
+                        
                         break
                 else:
                     fitness = None
@@ -476,6 +477,9 @@ class ExperimentManagement:
                                 float(line_1) if line_1 != 'None\n' else None
                         elif line_0 == 'average_height':
                             phenotype._behavioural_measurements.average_height = \
+                                float(line_1) if line_1 != 'None\n' else None
+                        elif line_0 == 'path_length':
+                            phenotype._behavioural_measurements.path_length = \
                                 float(line_1) if line_1 != 'None\n' else None
 
         return individual

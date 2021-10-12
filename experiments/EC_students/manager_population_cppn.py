@@ -85,20 +85,21 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 100
-
+    num_generations = 300
+    
     """
     population_size = 10
     offspring_size = 5
     """
 
     population_size = 50
-    offspring_size = 20
+    offspring_size = 25
 
     target_distance = 10
 
     body_n_start_mutations: int = 10
     brain_n_start_mutations: int = 10
+    
     max_structural_modules=100
 
     # body multineat settings
@@ -256,7 +257,11 @@ async def run():
         # loading a previous state of the experiment
         population.load_snapshot(
             gen_num
-        )  # I think this breaks when gen_num == -1 --Aart
+        )  # I think this breaks when gen_num == -1 --Aard
+        print("Fitnesses of recovered individuals: ")
+        for individual in population.individuals:
+            print(individual.fitness)
+
         if gen_num >= 0:
             logger.info(
                 "Recovered snapshot "
@@ -278,6 +283,7 @@ async def run():
                 population = await population.next_generation(gen_num, individuals)
 
             experiment_management.export_snapshots(population.individuals, gen_num)
+        
     else:
         # starting a new experiment
         experiment_management.create_exp_folders()

@@ -22,8 +22,6 @@ from ...revolve_bot import RevolveBot
 def develop(genotype: Genotype, config: str) -> CoreModule:
     log = logger.create_logger('experiment', handlers=[ logging.StreamHandler(sys.stdout), ])
 
-    print("wytf")
-
     # Set debug level to DEBUG
     log.setLevel(logging.DEBUG)
     # load robot file

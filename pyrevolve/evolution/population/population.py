@@ -161,7 +161,7 @@ class Population:
         self.individuals = recovered_individuals + self.individuals
 
     async def next_generation(
-        self, gen_num: int, recovered_individuals: Optional[List[Individual]] = None
+        self, gen_num: int, recovered_individuals: Optional[List[Individual]] = None, 
     ) -> Population:
         """
         Creates next generation of the population through selection, mutation, crossover
@@ -206,10 +206,14 @@ class Population:
             new_individuals.append(individual)
 
         # evaluate new individuals
-        await self.evaluate(new_individuals, gen_num)
+        if self.config.line_height_scaled:
+            await self.evaluate(new_individuals, gen_num, only_scale_individuals=self.individuals + recovered_individuals)
+        else:
+            await self.evaluate(new_individuals, gen_num)
 
         new_individuals = recovered_individuals + new_individuals
 
+        
         # create next population
         if self.config.population_management_selector is not None:
             new_individuals = self.config.population_management(
@@ -287,7 +291,7 @@ class Population:
             self.config.experiment_management.export_objectives(individual)
 
     async def evaluate(
-        self, new_individuals: List[Individual], gen_num: int, type_simulation="evolve"
+        self, new_individuals: List[Individual], gen_num: int, type_simulation="evolve", only_scale_individuals: List[Individual] = []
     ) -> None:
         """
         Evaluates each individual in the new gen population
@@ -298,7 +302,7 @@ class Population:
         """
         if callable(self.config.fitness_function):
             await self._evaluate_single_fitness(
-                new_individuals, gen_num, type_simulation
+                new_individuals, gen_num, type_simulation, only_scale_individuals=only_scale_individuals
             )
         elif isinstance(self.config.objective_functions, list):
             await self._evaluate_objectives(new_individuals, gen_num)
@@ -306,7 +310,7 @@ class Population:
             raise RuntimeError("Fitness function not configured correctly")
 
     async def _evaluate_single_fitness(
-        self, new_individuals: List[Individual], gen_num: int, type_simulation="evolve"
+        self, new_individuals: List[Individual], gen_num: int, type_simulation="evolve", only_scale_individuals: List[Individual] = [],
     ) -> None:
         # Parse command line / file input arguments
         # await self.simulator_connection.pause(True)
@@ -332,17 +336,24 @@ class Population:
             ) = await future
 
         if self.config.line_height_scaled:
-            min_line_fitness = min(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
-            line_fitness_range = (max(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
-                                - min(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness)
+            individuals_to_scale = new_individuals + only_scale_individuals
+            min_line_fitness = min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
+            line_fitness_range = (max(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
+                                - min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness)
 
-            min_height = min(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
-            height_range = (max(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
-                            - min(self.individuals, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height)
+            min_height = min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
+            height_range = (max(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
+                            - min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height)
 
-            for individual in self.individuals:
-                individual.fitness = (scale_fitness(individual.phenotype._behavioural_measurements.follow_line_fitness, min_line_fitness, line_fitness_range)
-                                     + scale_fitness(individual.phenotype._behavioural_measurements.average_height, min_height, height_range))
+            for individual in individuals_to_scale:
+                individual.fitness = (0.75* scale_fitness(individual.phenotype._behavioural_measurements.follow_line_fitness, min_line_fitness, line_fitness_range)
+                                     + 0.25* scale_fitness(individual.phenotype._behavioural_measurements.average_height, min_height, height_range))
+                
+                print(f"Individual {individual._id}: ")
+                print(f"   Line Fitness: {individual.phenotype._behavioural_measurements.follow_line_fitness}")
+                print(f"   Average Height: {individual.phenotype._behavioural_measurements.average_height}")
+                print(f"   Final Fitness: {individual.fitness}")
+
 
         for i, future in enumerate(robot_futures):
             individual = new_individuals[i]
@@ -364,6 +375,12 @@ class Population:
             )
             if type_simulation == "evolve":
                 self.config.experiment_management.export_fitness(individual)
+        
+        if only_scale_individuals:
+            for individual in only_scale_individuals:
+                self.config.experiment_management.export_fitness(individual)
+
+
 
     async def evaluate_single_robot(
         self,

@@ -79,31 +79,36 @@ def get_data_per_generation(df, data_label):
     return x, y
 
 
-def get_mean_and_std_generation_wise(x, y):
+def get_mean_and_std_and_max_generation_wise(x, y):
     """ Returns mean and std for each generation"""
 
     generations = np.array(list(set(x)))
     mean_gens = np.empty_like(generations, dtype=float)
     std_gens = np.empty_like(generations, dtype=float)
+    max_gens = np.empty_like(generations, dtype=float)
 
     for generation in generations:
         mean = np.mean([fitness for fitness, y_gen in zip(y,x) if y_gen == generation])
         std = np.std([fitness for fitness, y_gen in zip(y,x) if y_gen == generation])
+        max = np.max([fitness for fitness, y_gen in zip(y,x) if y_gen == generation])
         mean_gens[generation] = mean
         std_gens[generation] = std
+        max_gens[generation] = max
 
-    return generations,mean_gens, std_gens
+    return generations,mean_gens, std_gens, max_gens
 
 
-def plot_generational_graph(generations, mean, std, label, figure_dir):
+def plot_generational_graph(generations, mean, std, max, label, figure_dir):
     """ Creates a line plot with accompanying std region """
 
     sns.set()
-    plt.plot(generations, mean, 'b-')
+    plt.plot(generations, mean, 'b-', label="mean")
+    plt.plot(generations, max, 'r-', label="max")
     plt.fill_between(generations, mean - std, mean + std, color='b', alpha=0.2)
     plt.xlabel("Generation")
     plt.ylabel(label)
     plt.title(f"Mean {label}")
+    plt.legend()
 
     # Save png of plot to disc
     if not os.path.exists(figure_dir):
@@ -116,7 +121,7 @@ def plot_generational_graph(generations, mean, std, label, figure_dir):
 if __name__== "__main__":
 
     # Name of the experiment folder
-    experiment_name = "height_fitness_long/1"
+    experiment_name = "default_experiment/1"
 
     # Returns all robots and their associated data in a df
     robot_df = datafolder_to_df(experiment_name)
@@ -134,17 +139,17 @@ if __name__== "__main__":
     # Extracts generation, fitness pairs for each robot. (needed since each robot can occur > or < than 1 time in a generation)
     x, y = get_data_per_generation(robot_df, "fitness")
     # Calculates mean and std for each generation.
-    generations, mean, std = get_mean_and_std_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, "Fitness", figure_dir)
+    generations, mean, std, max = get_mean_and_std_and_max_generation_wise(x, y)
+    plot_generational_graph(generations, mean, std, max, "Fitness", figure_dir)
 
     x, y = get_data_per_generation(robot_df, "follow_line_fitness")
-    generations, mean, std = get_mean_and_std_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, "Distance traveled", figure_dir)
+    generations, mean, std, max = get_mean_and_std_and_max_generation_wise(x, y)
+    plot_generational_graph(generations, mean, std, max, "Distance traveled", figure_dir)
 
     x, y = get_data_per_generation(robot_df, "average_height")
-    generations, mean, std = get_mean_and_std_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, "Average height", figure_dir)
+    generations, mean, std, max = get_mean_and_std_and_max_generation_wise(x, y)
+    plot_generational_graph(generations, mean, std, max, "Average height", figure_dir)
 
     x, y = get_data_per_generation(robot_df, "avg_z_in_blocks")
-    generations, mean, std = get_mean_and_std_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, "Average height (blocks)", figure_dir)
+    generations, mean, std, max = get_mean_and_std_and_max_generation_wise(x, y)
+    plot_generational_graph(generations, mean, std, max, "Average height (blocks)", figure_dir)

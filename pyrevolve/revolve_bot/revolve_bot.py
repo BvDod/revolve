@@ -106,6 +106,17 @@ class RevolveBot:
                 for key, value in self._brain_measurements.measurements_to_dict().items():
                     file.write(f'{key} {value}\n')
 
+    def export_simulation_boundaries(self, data_path) -> None:
+        filepath = os.path.join(data_path, 'descriptors', f'boundaries_desc_{self.id}.txt')
+        with open(filepath, 'w+') as file:
+            if self.simulation_boundaries is not None:
+                for key, value in self._simulation_boundaries.measurements_to_dict().items():
+                    file.write(f'{key} {value}\n')
+            if self._brain_measurements is not None:
+                for key, value in self._brain_measurements.measurements_to_dict().items():
+                    file.write(f'{key} {value}\n')
+
+
     def measure_brain(self) -> MeasureBrain:
         """
         :return: instance of MeasureBrain after performing all measurements
