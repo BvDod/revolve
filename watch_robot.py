@@ -51,7 +51,7 @@ async def run():
     # initialization finished
 
     # load robot file
-    path = "test.yaml"
+    path = "./experiments/EC_students/data/default_experiment/1/data_fullevolution/phenotypes/phenotype_3772.yaml"
     robot = RevolveBot(_id=settings.test_robot)
     robot.load_file(path, conf_type="yaml")
     robot.update_substrate()

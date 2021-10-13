@@ -115,13 +115,52 @@ def plot_generational_graph(generations, mean, std, max, label, figure_dir):
         os.makedirs(figure_dir)
     plt.savefig(f"{figure_dir}{label}.png")
 
-    plt.show()
+    if only_save_mode:
+        plt.clf()
+    else:
+        plt.show()      
 
+def get_a_values(experiment_name):
+    experiment_folder = f"data/{experiment_name}/"
+    alpha_csv = experiment_folder + "data_fullevolution/alphas.csv"
+
+    with open(alpha_csv) as csvfile:
+        generations = []
+        line_a = []
+        height_a = []
+        reader = csv.reader(csvfile, delimiter=",")
+        for row in reader:
+            generations.append(int(row[0]))
+            line_a.append(float(row[1]))
+            height_a.append(float(row[2]))
+
+    return generations, line_a, height_a
+
+def plot_curve(generations, line_a, height_a, figure_dir):
+    plt.plot(generations, line_a, label="Line Fitness weight")
+    plt.plot(generations, height_a, label="Height weight")
+
+    plt.xlabel("Generation")
+    plt.ylabel("alpha")
+    plt.title("Alpha weight values")
+
+    plt.legend()
+
+    if not os.path.exists(figure_dir):
+        os.makedirs(figure_dir)
+    plt.savefig(f"{figure_dir}alpha_curve.png")
+
+    if only_save_mode:
+        plt.clf()
+    else:
+        plt.show()       
 
 if __name__== "__main__":
 
     # Name of the experiment folder
     experiment_name = "default_experiment/1"
+
+    only_save_mode = True
 
     # Returns all robots and their associated data in a df
     robot_df = datafolder_to_df(experiment_name)
@@ -153,3 +192,6 @@ if __name__== "__main__":
     x, y = get_data_per_generation(robot_df, "avg_z_in_blocks")
     generations, mean, std, max = get_mean_and_std_and_max_generation_wise(x, y)
     plot_generational_graph(generations, mean, std, max, "Average height (blocks)", figure_dir)
+
+    gens, line_a, height_a = get_a_values(experiment_name)
+    plot_curve(gens, line_a, height_a, figure_dir)

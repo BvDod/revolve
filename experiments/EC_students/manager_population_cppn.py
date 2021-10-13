@@ -44,6 +44,9 @@ from pyrevolve.genotype.plasticoding import PlasticodingConfig
 from pyrevolve.util.supervisor.analyzer_queue import AnalyzerQueue
 from pyrevolve.util.supervisor.simulator_queue import SimulatorQueue
 
+from pyrevolve.alpha.curves import linear_curve, step_down_curve, exponentional_curve
+
+import csv
 
 @dataclass
 class GenotypeConstructorConfig:
@@ -85,7 +88,7 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 300
+    num_generations = 100
     
     """
     population_size = 10
@@ -201,6 +204,10 @@ async def run():
         experiment_management=experiment_management,
         # target_distance=target_distance,
         line_height_scaled = False,
+        alpha_curve_function = linear_curve,
+        start_line_a = 0,
+        end_line_a = 1,
+        total_generations = num_generations
 
     )
 
@@ -292,7 +299,17 @@ async def run():
 
     # our evolutionary loop
     # gen_num can still be -1.
+    log_alpha_curve(population, gen_num)
     while gen_num < num_generations - 1:
         gen_num += 1
         population = await population.next_generation(gen_num)
         experiment_management.export_snapshots(population.individuals, gen_num)
+        log_alpha_curve(population, gen_num)
+
+def log_alpha_curve(population, gen_num):
+    pop = population
+    dir = pop.config.experiment_management._data_folder + "/alphas.csv"
+    alpha_line, alpha_height = pop.config.alpha_curve_function(gen_num, pop.config.total_generations, pop.config.start_line_a, pop.config.end_line_a)
+    with open(dir, "a") as f:
+        writer = csv.writer(f)
+        writer.writerow([gen_num, alpha_line, alpha_height])

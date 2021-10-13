@@ -345,9 +345,14 @@ class Population:
             height_range = (max(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
                             - min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height)
 
+            if self.alpha_curve_function:
+                line_a, height_a = self.alpha_curve_function(gen_num, self.config.total_generations, self.config.start_line_a, self.config.end_line_a)
+            else:
+                line_a, height_a = 0.5, 0.5
+
             for individual in individuals_to_scale:
-                individual.fitness = (0.75* scale_fitness(individual.phenotype._behavioural_measurements.follow_line_fitness, min_line_fitness, line_fitness_range)
-                                     + 0.25* scale_fitness(individual.phenotype._behavioural_measurements.average_height, min_height, height_range))
+                individual.fitness = ((line_a * scale_fitness(individual.phenotype._behavioural_measurements.follow_line_fitness, min_line_fitness, line_fitness_range))
+                                     + (height_a * scale_fitness(individual.phenotype._behavioural_measurements.average_height, min_height, height_range)))
                 
                 print(f"Individual {individual._id}: ")
                 print(f"   Line Fitness: {individual.phenotype._behavioural_measurements.follow_line_fitness}")

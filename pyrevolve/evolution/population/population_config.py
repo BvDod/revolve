@@ -32,7 +32,11 @@ class PopulationConfig:
                  grace_time: float = 0.0,
                  objective_functions: Optional[List[Callable[[RobotManager, RevolveBot], float]]] = None,
                  line_height_scaled: Optional[bool] = False,
-                 fitness_function: Optional[Callable[[RobotManager, RevolveBot], float]] = None):
+                 fitness_function: Optional[Callable[[RobotManager, RevolveBot], float]] = None,
+                 alpha_curve_function = None,
+                 start_line_a = 0,
+                 end_line_a = 1,
+                 total_generations = 200):
         """
         Creates a PopulationConfig object that sets the particular configuration for the population
 
@@ -85,3 +89,7 @@ class PopulationConfig:
         self.offspring_size = offspring_size
         self.objective_functions = objective_functions
         self.line_height_scaled = line_height_scaled
+        self.alpha_curve_function = alpha_curve_function
+        self.start_line_a = start_line_a
+        self.end_line_a = end_line_a
+        self.total_generations = total_generations
