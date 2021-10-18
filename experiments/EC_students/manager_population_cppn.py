@@ -88,7 +88,7 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 1000
+    num_generations = 300
     
     """
     population_size = 10
@@ -177,6 +177,7 @@ async def run():
     # parse command line arguments
     settings = parser.parse_args()
 
+
     # create object that provides functionality
     # to access the correct experiment directories,
     # export/import things, recovery info etc.
@@ -205,8 +206,8 @@ async def run():
         # target_distance=target_distance,
         line_height_scaled = True,
         alpha_curve_function = linear_curve,
-        start_line_a = 0.4,
-        end_line_a = 1,
+        start_line_a = settings.line_alpha_start,
+        end_line_a = settings.line_alpha_start,
         total_generations = num_generations
 
     )

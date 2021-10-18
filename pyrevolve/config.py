@@ -66,6 +66,13 @@ def str_to_address(v):
 parser = CustomParser(fromfile_prefix_chars='@')
 
 parser.add_argument(
+    '--line_alpha_start',
+    default=0.5,
+    type=float,
+    help="Defines the line_alpha_start variable"
+)
+
+parser.add_argument(
     '--manager',
     default=None,
     type=str,
