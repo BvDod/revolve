@@ -88,15 +88,15 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 100
+    num_generations = 1000
     
     """
     population_size = 10
     offspring_size = 5
     """
 
-    population_size = 50
-    offspring_size = 25
+    population_size = 100
+    offspring_size = 50
 
     target_distance = 10
 
@@ -203,9 +203,9 @@ async def run():
         experiment_name=settings.experiment_name,
         experiment_management=experiment_management,
         # target_distance=target_distance,
-        line_height_scaled = False,
+        line_height_scaled = True,
         alpha_curve_function = linear_curve,
-        start_line_a = 0,
+        start_line_a = 0.4,
         end_line_a = 1,
         total_generations = num_generations
 

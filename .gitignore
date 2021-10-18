@@ -83,3 +83,6 @@ src/
 # OS crap
 .DS_Store
 .directory
+
+experiments/EC_students/data/
+experiments/EC_students/figures/

@@ -3,11 +3,11 @@
 set -u
 
 N=20
-CORES=4
+CORES=16
 MANAGER_PATH="experiments/EC_students/manager_population_cppn.py"
 EVALUATION_TIME=30
-EXPERIMENT_NAME="height_fitness_100gen_50pop"
-PORT_START=11000
+EXPERIMENT_NAME="linear_40_100"
+PORT_START=11080
 
 set -x
 
@@ -17,7 +17,7 @@ total_start=$(date +%s)
 
 for i in $(seq 1 $N); do
   echo "---------------- RUN $i/$N -----------------"
-
+  ulimit -Sn 4096
   run_start=$(date +%s)
   until ./revolve.py \
     --simulator-cmd gzserver \

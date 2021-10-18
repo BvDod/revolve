@@ -158,7 +158,7 @@ def plot_curve(generations, line_a, height_a, figure_dir):
 if __name__== "__main__":
 
     # Name of the experiment folder
-    experiment_name = "default_experiment/1"
+    experiment_name = "linear_40_100/1"
 
     only_save_mode = True
 
