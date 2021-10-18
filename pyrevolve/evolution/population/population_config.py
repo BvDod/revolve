@@ -36,7 +36,8 @@ class PopulationConfig:
                  alpha_curve_function = None,
                  start_line_a = 0,
                  end_line_a = 1,
-                 total_generations = 200):
+                 total_generations = 200,
+                 only_scale_using_mu = False):
         """
         Creates a PopulationConfig object that sets the particular configuration for the population
 
@@ -93,3 +94,4 @@ class PopulationConfig:
         self.start_line_a = start_line_a
         self.end_line_a = end_line_a
         self.total_generations = total_generations
+        self.only_scale_using_mu = only_scale_using_mu

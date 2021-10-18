@@ -337,13 +337,21 @@ class Population:
 
         if self.config.line_height_scaled:
             individuals_to_scale = new_individuals + only_scale_individuals
+            
             min_line_fitness = min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
-            line_fitness_range = (max(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
-                                - min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness)
-
             min_height = min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
-            height_range = (max(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
-                            - min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height)
+            
+            if self.only_scale_using_mu:
+                line_fitness_range = (max(only_scale_individuals, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
+                                - min(only_scale_individuals, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness)
+                height_range = (max(only_scale_individuals, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
+                                - min(only_scale_individuals, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height)
+
+            else:
+                line_fitness_range = (max(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
+                                    - min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness)
+                height_range = (max(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
+                                - min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height)
 
             if self.config.alpha_curve_function:
                 line_a, height_a = self.config.alpha_curve_function(gen_num, self.config.total_generations, self.config.start_line_a, self.config.end_line_a)
