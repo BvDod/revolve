@@ -206,10 +206,10 @@ async def run():
         # target_distance=target_distance,
         line_height_scaled = True,
         alpha_curve_function = linear_curve,
-        start_line_a = 0.75,
-        end_line_a = 0.75,
+        start_line_a = settings.line_alpha_start,
+        end_line_a = settings.line_alpha_start,
         total_generations = num_generations,
-        only_scale_using_mu = True
+        only_scale_using_mu = settings.only_scale_with_mu
     )
 
     # check if recovery is required

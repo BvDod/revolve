@@ -73,6 +73,13 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '--only_scale_with_mu',
+    default=False,
+    type=bool,
+    help="Defines if the scaled fitness function should only be performed using mu"
+)
+
+parser.add_argument(
     '--manager',
     default=None,
     type=str,
