@@ -98,7 +98,7 @@ def get_mean_and_std_and_max_generation_wise(x, y):
     return generations,mean_gens, std_gens, max_gens
 
 
-def plot_generational_graph(generations, mean, std, max, label, figure_dir):
+def plot_generational_graph(generations, mean, std, max, label, figure_dir, only_save_mode):
     """ Creates a line plot with accompanying std region """
 
     sns.set()
@@ -136,7 +136,7 @@ def get_a_values(experiment_name):
 
     return generations, line_a, height_a
 
-def plot_curve(generations, line_a, height_a, figure_dir):
+def plot_curve(generations, line_a, height_a, figure_dir, only_save_mode):
     plt.plot(generations, line_a, label="Line Fitness weight")
     plt.plot(generations, height_a, label="Height weight")
 
@@ -155,11 +155,8 @@ def plot_curve(generations, line_a, height_a, figure_dir):
     else:
         plt.show()       
 
-if __name__== "__main__":
-
+def save_figures(experiment_name):
     # Name of the experiment folder
-    experiment_name = "linear_40_100/1"
-
     only_save_mode = True
 
     # Returns all robots and their associated data in a df
@@ -179,19 +176,28 @@ if __name__== "__main__":
     x, y = get_data_per_generation(robot_df, "fitness")
     # Calculates mean and std for each generation.
     generations, mean, std, max = get_mean_and_std_and_max_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, max, "Fitness", figure_dir)
+    plot_generational_graph(generations, mean, std, max, "Fitness", figure_dir, only_save_mode)
 
     x, y = get_data_per_generation(robot_df, "follow_line_fitness")
     generations, mean, std, max = get_mean_and_std_and_max_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, max, "Distance traveled", figure_dir)
+    plot_generational_graph(generations, mean, std, max, "Distance traveled", figure_dir, only_save_mode)
 
     x, y = get_data_per_generation(robot_df, "average_height")
     generations, mean, std, max = get_mean_and_std_and_max_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, max, "Average height", figure_dir)
+    plot_generational_graph(generations, mean, std, max, "Average height", figure_dir, only_save_mode)
 
     x, y = get_data_per_generation(robot_df, "avg_z_in_blocks")
     generations, mean, std, max = get_mean_and_std_and_max_generation_wise(x, y)
-    plot_generational_graph(generations, mean, std, max, "Average height (blocks)", figure_dir)
+    plot_generational_graph(generations, mean, std, max, "Average height (blocks)", figure_dir, only_save_mode)
 
     gens, line_a, height_a = get_a_values(experiment_name)
-    plot_curve(gens, line_a, height_a, figure_dir)
+    plot_curve(gens, line_a, height_a, figure_dir, only_save_mode)
+
+if __name__== "__main__":
+
+    # Loop over all experiments in ./data and turns all unprocessed ones into figures
+    for dir_experiment in os.listdir("./data/"):
+        for dir_run in os.listdir(f"./data/{dir_experiment}/"):
+            if not os.path.exists(f"./figures/{dir_experiment}/{dir_run}/"):
+                save_figures(f"{dir_experiment}/{dir_run}")
+
