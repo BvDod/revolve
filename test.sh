@@ -3,10 +3,10 @@
 set -u
 
 N=1
-CORES=4
+CORES=16
 MANAGER_PATH="experiments/EC_students/manager_population_cppn.py"
 EVALUATION_TIME=30
-EXPERIMENT_NAME="linear_"
+EXPERIMENT_NAME="linear_only_mu_"
 PORT_START=11080
 
 set -x
@@ -15,7 +15,7 @@ cd $HOME/git/revolve
 
 total_start=$(date +%s)
 
-for alpha in $(seq 0.1 0.1 0.9); do
+for alpha in $(seq 0.7 0.1 0.9); do
     EXPERIMENT_NAME_RUN="$EXPERIMENT_NAME$alpha"
     echo "$EXPERIMENT_NAME_RUN"
     for i in $(seq 1 $N); do
@@ -30,7 +30,8 @@ for alpha in $(seq 0.1 0.1 0.9); do
             --n-cores $CORES \
             --port-start $PORT_START \
             --evaluation-time $EVALUATION_TIME \
-            --line_alpha_start $alpha; do
+            --line_alpha_start $alpha \
+            --only_scale_with_mu True; do
             sleep 1;
     done
 done
