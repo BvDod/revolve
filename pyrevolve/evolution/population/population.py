@@ -343,7 +343,7 @@ class Population:
             min_line_fitness = min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
             min_height = min(individuals_to_scale, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
             
-            if self.config.only_scale_using_mu:
+            if self.config.only_scale_using_mu and only_scale_individuals:
                 line_fitness_range = (max(only_scale_individuals, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness
                                 - min(only_scale_individuals, key= lambda x: x.phenotype._behavioural_measurements.follow_line_fitness).phenotype._behavioural_measurements.follow_line_fitness)
                 height_range = (max(only_scale_individuals, key= lambda x: x.phenotype._behavioural_measurements.average_height).phenotype._behavioural_measurements.average_height
