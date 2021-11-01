@@ -253,20 +253,22 @@ class Population:
                 -math.inf for _ in range(len(self.config.objective_functions))
             ]
 
-            assert len(individual.phenotype) == len(self.config.objective_functions)
-            for objective, robot in enumerate(individual.phenotype):
+            # assert len(individual.phenotype) == len(self.config.objective_functions)
+
+            # Instead we use the same phenotype for both fitness tests.
+            # Note that the test now runs two times.
+            for i, objective_fun in enumerate(self.config.objective_functions):
                 logger.info(
-                    f"Evaluating individual (gen {gen_num} - objective {objective}) {robot.id}"
+                    f"Evaluating individual (gen {gen_num} - objective {i}) {individual.phenotype.id}"
                 )
-                objective_fun = self.config.objective_functions[objective]
                 future = asyncio.ensure_future(
                     self.evaluate_single_robot(
                         individual=individual,
                         fitness_fun=objective_fun,
-                        phenotype=robot,
+                        phenotype=individual.phenotype,
                     )
                 )
-                robot_futures.append((individual, robot, objective, future))
+                robot_futures.append((individual, individual.phenotype, i, future))
 
         await asyncio.sleep(1)
 
