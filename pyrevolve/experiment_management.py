@@ -39,6 +39,7 @@ class ExperimentManagement:
         self._behavioural_desc_folder: str = os.path.join(self._descriptor_folder, 'behavioural')
         self._failed_robots_folder: str = os.path.join(self.data_folder, 'failed_eval_robots')
         self._generations_folder: str = os.path.join(self.experiment_folder, self.GENERATIONS_FOLDER)
+        self.nsga_mode = self.settings.nsga_mode 
 
     #TODO refactoring
     def create_exp_folders(self) -> None:
@@ -444,6 +445,8 @@ class ExperimentManagement:
         for i, phenotype in enumerate(phenotypes):
             # if there are phenotype alternatives, load with _{i} id postfix
             full_id = str(phenotype.id) if len(phenotypes) == 1 else f"{phenotype.id}_{i}"
+            if self.nsga_mode == True:
+                full_id = f"{phenotype.id}_{0}"
             with open(os.path.join(self._behavioural_desc_folder, f'behavior_desc_{full_id}.txt')) as f:
                 lines = f.readlines()
                 if lines[0] == 'None':

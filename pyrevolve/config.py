@@ -80,6 +80,13 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '--nsga_mode',
+    default=False,
+    type=bool,
+    help="Defines if nsga mode should be used for generational recovery, should always be on when performing nsga"
+)
+
+parser.add_argument(
     '--manager',
     default=None,
     type=str,
