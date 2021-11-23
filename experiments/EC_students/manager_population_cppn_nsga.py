@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import multineat
 from pyrevolve import parser
 from pyrevolve.custom_logging.logger import logger
-from pyrevolve.evolution.fitness import follow_line as fitness_follow_line, average_height_fitness
+from pyrevolve.evolution.fitness import follow_line as fitness_follow_line, average_height_fitness, displacement
 from pyrevolve.evolution.population.population import Population
 from pyrevolve.evolution.population.population_config import PopulationConfig
 from pyrevolve.evolution.population.population_management import (
@@ -194,7 +194,7 @@ async def run():
         fitness_function=None,
         genotype_constructor=create_random_genotype,
         genotype_conf=genotype_constructor_config,
-        objective_functions=[fitness_follow_line, average_height_fitness],
+        objective_functions=[displacement, average_height_fitness],
         mutation_operator=bodybrain_composition_mutate,
         mutation_conf=bodybrain_composition_config,
         crossover_operator=bodybrain_composition_crossover,
